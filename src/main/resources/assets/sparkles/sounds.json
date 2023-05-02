@@ -1,0 +1,8 @@
+{
+  "sparkle": {
+    "subtitle": "sparkles.subtitle.sparkle",
+    "sounds": [
+      "sparkles:sparkle"
+    ]
+  }
+}

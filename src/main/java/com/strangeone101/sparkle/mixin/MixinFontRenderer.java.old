@@ -1,0 +1,34 @@
+package com.strangeone101.sparkle.mixin;
+
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.FontRenderer;
+import net.minecraft.client.renderer.IRenderTypeBuffer;
+import net.minecraft.util.IReorderingProcessor;
+import net.minecraft.util.math.vector.Matrix4f;
+import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.Shadow;
+import org.spongepowered.asm.mixin.injection.At;
+import org.spongepowered.asm.mixin.injection.Inject;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
+
+@Mixin(FontRenderer.class)
+public abstract class MixinFontRenderer {
+
+
+    /**
+     * Changes the shiny color of names
+     */
+    @Inject(method = "drawEntityText", at = @At("HEAD"), cancellable = true)
+    public void drawNamesChangingShiny(IReorderingProcessor processor, float x, float y, int color, boolean dropShadow, Matrix4f matrix, IRenderTypeBuffer buffer, boolean transparent, int colorBackground, int packedLight, CallbackInfoReturnable<Integer> ci) {
+        if (color == -15000) {
+            color = 0xe8aa00;
+            ci.setReturnValue(this.drawText(processor, x, y, color, dropShadow, matrix, buffer, transparent, colorBackground, packedLight));
+        }
+    }
+
+    @Shadow
+    private int drawText(IReorderingProcessor processor, float x, float y, int color, boolean drawShadow, Matrix4f matrix, IRenderTypeBuffer buffer, boolean transparent, int colorBackground, int packedLight) {
+        return 0;
+    }
+}

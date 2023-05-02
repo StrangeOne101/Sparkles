@@ -1,0 +1,103 @@
+package com.strangeone101.sparkle.mixin;
+
+import com.mojang.blaze3d.matrix.MatrixStack;
+import com.mojang.blaze3d.systems.RenderSystem;
+import com.pixelmonmod.pixelmon.api.pokemon.Element;
+import com.pixelmonmod.pixelmon.api.pokemon.Pokemon;
+import com.pixelmonmod.pixelmon.api.pokemon.PokerusStrain;
+import com.pixelmonmod.pixelmon.client.gui.Resources;
+import com.pixelmonmod.pixelmon.client.gui.ScreenHelper;
+import com.pixelmonmod.pixelmon.client.gui.pokechecker.PokeCheckerScreen;
+import com.strangeone101.sparkle.Sparkle;
+import net.minecraft.client.gui.screen.Screen;
+import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.text.ITextComponent;
+import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.Shadow;
+
+import java.util.Objects;
+
+@Mixin(PokeCheckerScreen.class)
+public abstract class MixinPokeCheckerScreen extends Screen {
+
+    @Shadow(remap = false)
+    private Pokemon pokemon;
+    @Shadow(remap = false)
+    protected int xSize = 176;
+    @Shadow(remap = false)
+    protected int ySize = 166;
+
+    protected MixinPokeCheckerScreen(ITextComponent titleIn) {
+        super(titleIn);
+    }
+
+    protected void drawBasePokemonInfo(MatrixStack matrix) {
+        ScreenHelper.drawImageQuad(this.pokemon.getSprite(), matrix, -27.0F, 14.0F, 68.0F, 68.0F, 0.0F, 0.0F, 1.0F, 1.0F, 1.0F, 1.0F, 1.0F, 1.0F, 0.0F);
+        RenderSystem.enableBlend();
+        RenderSystem.blendFunc(770, 771);
+
+        if (!this.pokemon.isEgg()) {
+            Element type1 = this.pokemon.getForm().getTypes().get(0);
+            Element type2 = (this.pokemon.getForm().getTypes().size() > 1) ? this.pokemon.getForm().getTypes().get(1) : null;
+            float x = type1.textureX;
+            float y = type1.textureY;
+            float x1 = 0.0F;
+            float y1 = 0.0F;
+            if (type2 != null) {
+                x1 = type2.textureX;
+                y1 = type2.textureY;
+            }
+            if (type2 != Element.MYSTERY && type2 != null) {
+                ScreenHelper.drawImageQuadUV(Resources.types, matrix, 8.0F, 0.0F, 21.0F, 21.0F, x1, y1, 240.0F, 240.0F, 1.0F, 1.0F, 1.0F, 1.0F, 0.0F);
+                ScreenHelper.drawImageQuadUV(Resources.types, matrix, -14.0F, 0.0F, 21.0F, 21.0F, x, y, 240.0F, 240.0F, 1.0F, 1.0F, 1.0F, 1.0F, 0.0F);
+            } else {
+                ScreenHelper.drawImageQuadUV(Resources.types, matrix, -2.0F, 0.0F, 21.0F, 21.0F, x, y, 240.0F, 240.0F, 1.0F, 1.0F, 1.0F, 1.0F, 0.0F);
+            }
+        }
+
+        if (this.pokemon.isShiny()) {
+            //ScreenHelper.drawImageQuad(Resources.shiny, matrix, -35.0F, 73.0F, 16.0F, 16.0F, 0.0F, 0.0F, 1.0F, 1.0F, 1.0F, 1.0F, 1.0F, 1.0F, 0.0F);
+        }
+
+        if (this.pokemon.getPokerus() != null && !Objects.equals((this.pokemon.getPokerus()).type, PokerusStrain.UNINFECTED)) {
+            ScreenHelper.drawImageQuad(this.pokemon.getPokerus().canInfect() ? Resources.pokerusInfectious : Resources.pokerusCured, matrix, 40.0F, 72.0F, 8.0F, 8.0F, 0.0F, 0.0F, 1.0F, 1.0F, 1.0F, 1.0F, 1.0F, 1.0F, 1.0F);
+        }
+
+        RenderSystem.disableBlend();
+    }
+
+    protected void drawPokemonName(MatrixStack matrix) {
+        if (this.pokemon.isEgg()) {
+            drawCenteredStringWithoutShadow(matrix, "Egg", (this.width - this.xSize) / 2 + 7, (this.height - this.ySize) / 2 + 89, 16777215);
+        } else {
+            int textSize = 0;
+            int offset = this.pokemon.isShiny() && !this.pokemon.hasGigantamaxFactor() ? -9 : (this.pokemon.hasGigantamaxFactor() ? 9 : 0);
+            if (this.pokemon.getNickname() != null && !this.pokemon.getNickname().equals("")) {
+                String ogName = "(" + this.pokemon.getSpecies().getLocalizedName() + ")";
+                drawCenteredStringWithoutShadow(matrix, ogName, (this.width - this.xSize) / 2 + 7 + offset, (this.height - this.ySize) / 2 + 93, 16777215);
+                drawCenteredStringWithoutShadow(matrix, this.pokemon.getNickname(), (this.width - this.xSize) / 2 + 7 + offset, (this.height - this.ySize) / 2 + 84, 16777215);
+                textSize = Math.max(this.font.getStringWidth(this.pokemon.getNickname()), this.font.getStringWidth(ogName));
+            } else {
+                drawCenteredStringWithoutShadow(matrix, this.pokemon.getDisplayName(), (this.width - this.xSize) / 2 + 7 + offset, (this.height - this.ySize) / 2 + 89, 16777215);
+                textSize = this.font.getStringWidth(this.pokemon.getDisplayName());
+            }
+            if (this.pokemon.hasGigantamaxFactor()) {
+                RenderSystem.enableAlphaTest();
+                RenderSystem.enableBlend();
+                RenderSystem.blendFunc(770, 771);
+                ResourceLocation loc = this.pokemon.isShiny() ? new ResourceLocation(Sparkle.MODID, "textures/gui/shiny_gmax") : Resources.gmaxFactor;
+                ScreenHelper.drawImageQuad(loc, matrix, (this.width - this.xSize) / 2.0F - textSize / 2.0F - 3.0F, (this.height - this.ySize) / 2.0F + 84.0F, 16.0F, 16.0F, 0.0F, 0.0F, 1.0F, 1.0F, 1.0F, 1.0F, 1.0F, 1.0F, 0.0F);
+            } else if (this.pokemon.isShiny()) {
+                RenderSystem.enableAlphaTest();
+                RenderSystem.enableBlend();
+                RenderSystem.blendFunc(770, 771);
+                ScreenHelper.drawImageQuad(new ResourceLocation(Sparkle.MODID, "textures/gui/shiny_star"), matrix, (this.width - this.xSize) / 2.0F + textSize / 2.0F + 1.0F, (this.height - this.ySize) / 2.0F + 84.0F, 16.0F, 16.0F, 0.0F, 0.0F, 1.0F, 1.0F, 1.0F, 1.0F, 1.0F, 1.0F, 0.0F);
+            }
+        }
+    }
+
+    @Shadow(remap = false)
+    public void drawCenteredStringWithoutShadow(MatrixStack matrix, String text, int x, int y, int color) {
+
+    }
+}

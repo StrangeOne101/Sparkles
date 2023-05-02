@@ -1,0 +1,10 @@
+{
+  "required": true,
+  "minVersion": "0.7.10",
+  "package": "com.strangeone101.sparkle.mixin",
+  "refmap": "mixins.sparkles.refmap.json",
+  "target": "@env(DEFAULT)",
+  "compatibilityLevel": "JAVA_8",
+  "mixins": [],
+  "client": []
+}
