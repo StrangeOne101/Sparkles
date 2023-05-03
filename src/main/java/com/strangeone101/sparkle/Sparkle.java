@@ -31,10 +31,6 @@ public class Sparkle {
     static DeferredRegister<ParticleType<?>> PARTICLES = DeferredRegister.create(ForgeRegistries.PARTICLE_TYPES, MODID);
     static DeferredRegister<SoundEvent> SOUNDS = DeferredRegister.create(ForgeRegistries.SOUND_EVENTS, MODID);
 
-    public static RegistryObject<BasicParticleType> STAR_PARTICLE = PARTICLES.register("star", () -> new BasicParticleType(true));
-    //public static RegistryObject<BasicParticleType> TWINKLE_PARTICLE = PARTICLES.register("twinkle", () -> new BasicParticleType(true));
-    public static RegistryObject<SoundEvent> SHINY_SOUND = SOUNDS.register("sparkle", () -> new SoundEvent(new ResourceLocation(MODID, "sparkle")));
-
     /*public static RenderType GOLD_GLINT = RenderType.makeType("shiny_glint", DefaultVertexFormats.POSITION_TEX, 7, 256,
             RenderType.State.getBuilder().texture(new RenderState.TextureState(new ResourceLocation(MODID, "misc/glint"), true, false))
                     .writeMask(new RenderState.WriteMaskState(true, false))
