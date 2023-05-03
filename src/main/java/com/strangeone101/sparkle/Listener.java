@@ -34,7 +34,7 @@ public class Listener {
                 PixelmonEntity entity = (PixelmonEntity) event.getEntity();
                 if (entity.getPokemon().isShiny() && !entity.isBossPokemon()) {
                     //Sparkle.LOGGER.info("Pixelmon spawned on client2: " + event.getWorld().isRemote);
-                    ShinyTracker tracker = Sparkle.SHINY_TRACKER;
+                    ShinyTracker tracker = ClientProxy.SHINY_TRACKER;
                     if (tracker.shouldTrackShiny(entity)) {
                         //Sparkle.LOGGER.info("Pixelmon spawned on client3: " + event.getWorld().isRemote);
                         tracker.track(entity);
@@ -47,17 +47,17 @@ public class Listener {
     public void onClientTick(TickEvent.ClientTickEvent event) {
         if (event.phase == TickEvent.Phase.END && !Minecraft.getInstance().isGamePaused()
                 && (Minecraft.getInstance().currentScreen == null || Minecraft.getInstance().currentScreen instanceof ChatScreen)) {
-            Sparkle.SHINY_TRACKER.tick();
+            ClientProxy.SHINY_TRACKER.tick();
         }
     }
 
     public void onPlayerLeaveWorld(PlayerEvent.PlayerLoggedOutEvent event) {
-        Sparkle.SHINY_TRACKER.untrackAll();
+        ClientProxy.SHINY_TRACKER.untrackAll();
     }
 
     public void onRenderWorldLastEvent(RenderWorldLastEvent event) {
 
-        Sparkle.SHINY_TRACKER.camera = new ClippingHelper(event.getMatrixStack().getLast().getMatrix(), event.getProjectionMatrix());
+        ClientProxy.SHINY_TRACKER.camera = new ClippingHelper(event.getMatrixStack().getLast().getMatrix(), event.getProjectionMatrix());
         //Sparkle.LOGGER.info("Matrix: " + event.getMatrixStack().getLast().getMatrix());
         //Sparkle.LOGGER.info("Projection: " + event.getProjectionMatrix());
     }

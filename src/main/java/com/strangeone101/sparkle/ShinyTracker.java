@@ -1,29 +1,18 @@
 package com.strangeone101.sparkle;
 
-import com.mojang.authlib.GameProfile;
 import com.pixelmonmod.pixelmon.api.pokemon.Pokemon;
-import com.pixelmonmod.pixelmon.api.storage.PCStorage;
 import com.pixelmonmod.pixelmon.api.util.Scheduling;
 import com.pixelmonmod.pixelmon.battles.BattleRegistry;
-import com.pixelmonmod.pixelmon.client.models.PixelmonModelBase;
-import com.pixelmonmod.pixelmon.client.models.PixelmonModelRenderer;
+
 import com.pixelmonmod.pixelmon.entities.pixelmon.PixelmonEntity;
-import com.strangeone101.sparkle.Sparkle;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.entity.player.AbstractClientPlayerEntity;
 import net.minecraft.client.entity.player.ClientPlayerEntity;
-import net.minecraft.client.renderer.WorldRenderer;
 import net.minecraft.client.renderer.culling.ClippingHelper;
-import net.minecraft.client.world.ClientWorld;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.math.BlockRayTraceResult;
 import net.minecraft.util.math.RayTraceContext;
 import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.util.math.vector.Vector3d;
-import org.spongepowered.asm.mixin.Mixin;
-import org.spongepowered.asm.mixin.injection.At;
-import org.spongepowered.asm.mixin.injection.Inject;
-import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 import java.util.HashSet;
 import java.util.Iterator;
@@ -58,7 +47,7 @@ public class ShinyTracker {
     public void tick() {
 
         //Check if the player is in a battle, and if so, don't sparkle shinies
-        if (BattleRegistry.getBattle(Minecraft.getInstance().player) != null) return;
+        if (BattleRegistry.getBattle(Minecraft.getInstance().player) != null || camera == null) return;
 
         //Filter out all dead entities
         shinyTracking.removeIf(entity -> !entity.isLoaded() || !entity.isAlive());

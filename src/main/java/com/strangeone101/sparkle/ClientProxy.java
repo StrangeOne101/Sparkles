@@ -11,6 +11,8 @@ import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 @OnlyIn(Dist.CLIENT)
 public class ClientProxy {
 
+    public static final ShinyTracker SHINY_TRACKER = new ShinyTracker();
+
     public DistExecutor.SafeRunnable register() {
         return () -> {
             FMLJavaModLoadingContext.get().getModEventBus().addListener(this::registerParticleFactories);

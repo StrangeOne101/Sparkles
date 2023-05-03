@@ -6,10 +6,14 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.SoundEvent;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.fml.DistExecutor;
+import net.minecraftforge.fml.ExtensionPoint;
+import net.minecraftforge.fml.ModLoadingContext;
 import net.minecraftforge.fml.RegistryObject;
 import net.minecraftforge.fml.common.Mod;
+import net.minecraftforge.fml.network.FMLNetworkConstants;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
+import org.apache.commons.lang3.tuple.Pair;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -18,7 +22,6 @@ import org.apache.logging.log4j.Logger;
 public class Sparkle {
 
     public static final String MODID = "sparkles";
-    public static final ShinyTracker SHINY_TRACKER = new ShinyTracker();
 
     public static final int SHINY_COLOR = 0xe8aa00;
 
@@ -46,7 +49,10 @@ public class Sparkle {
                     })).texturing(RenderState.GLINT_TEXTURING).target(ITEM_ENTITY_TARGET).build(false));*/
     public Sparkle() {
 
-        DistExecutor.safeRunWhenOn(Dist.CLIENT, () -> {
+        //Make the server tell clients it is fine to join without it
+        ModLoadingContext.get().registerExtensionPoint(ExtensionPoint.DISPLAYTEST, () -> Pair.of(() -> FMLNetworkConstants.IGNORESERVERONLY, (a, b) -> true));
+
+        DistExecutor.unsafeRunWhenOn(Dist.CLIENT, () -> {
             ClientProxy client = new ClientProxy();
             return client.register();
         });
