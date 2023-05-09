@@ -1,23 +1,26 @@
 package com.strangeone101.sparkle.particle;
 
 import com.mojang.blaze3d.vertex.IVertexBuilder;
+import com.strangeone101.sparkle.Sparkle;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.particle.IAnimatedSprite;
 import net.minecraft.client.particle.IParticleFactory;
 import net.minecraft.client.particle.IParticleRenderType;
 import net.minecraft.client.particle.Particle;
+import net.minecraft.client.particle.ParticleManager;
 import net.minecraft.client.particle.SpriteTexturedParticle;
 import net.minecraft.client.renderer.ActiveRenderInfo;
 import net.minecraft.client.world.ClientWorld;
 import net.minecraft.particles.BasicParticleType;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.MathHelper;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
 @OnlyIn(Dist.CLIENT)
-public class StarParticle extends SpriteTexturedParticle {
+public class StarParticle extends FakeParticle {
 
-    public IAnimatedSprite texture;
+    private static IAnimatedSprite texture = loadTexture(new ResourceLocation(Sparkle.MODID, "star"));
     private float angleDirection;
     private int startAge;
     private float prevScale;
@@ -30,9 +33,8 @@ public class StarParticle extends SpriteTexturedParticle {
     private static final int[] fadeColors = {0x00D5ED, 0xD400E8, 0xE52A00, 0x95E500, 0xE27C00, 0x5200E0};
     private static final int color = 0xEFEF00;
 
-    protected StarParticle(ClientWorld world, double x, double y, double z, double motionX, double motionY, double motionZ, IAnimatedSprite texture) {
+    public StarParticle(ClientWorld world, double x, double y, double z, double motionX, double motionY, double motionZ) {
         super(world, x, y, z, motionX, motionY, motionZ);
-        this.texture = texture;
 
         this.motionX = motionX + (Math.random() * 2.0D - 1.0D) * (double)0.1F;
         this.motionY = motionY + (Math.random() * 2.0D - 1.0D) * (double)0.1F;
@@ -136,6 +138,11 @@ public class StarParticle extends SpriteTexturedParticle {
         return 15728880;
     }
 
+    @Override
+    public ResourceLocation getResourceLocation() {
+        return new ResourceLocation(Sparkle.MODID, "star");
+    }
+
     @OnlyIn(Dist.CLIENT)
     public static class Factory implements IParticleFactory<BasicParticleType> {
         private final IAnimatedSprite spriteSet;
@@ -145,7 +152,7 @@ public class StarParticle extends SpriteTexturedParticle {
         }
 
         public Particle makeParticle(BasicParticleType typeIn, ClientWorld worldIn, double x, double y, double z, double xSpeed, double ySpeed, double zSpeed) {
-            return new StarParticle(worldIn, x, y, z, xSpeed, ySpeed, zSpeed, this.spriteSet);
+            return new StarParticle(worldIn, x, y, z, xSpeed, ySpeed, zSpeed);
         }
     }
 }

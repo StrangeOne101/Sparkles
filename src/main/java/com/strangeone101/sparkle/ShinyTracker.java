@@ -4,6 +4,7 @@ import com.pixelmonmod.pixelmon.api.pokemon.Pokemon;
 import com.pixelmonmod.pixelmon.battles.BattleRegistry;
 
 import com.pixelmonmod.pixelmon.entities.pixelmon.PixelmonEntity;
+import com.strangeone101.sparkle.particle.StarParticle;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.player.ClientPlayerEntity;
 import net.minecraft.client.renderer.culling.ClippingHelper;
@@ -134,7 +135,11 @@ public class ShinyTracker {
             double z = zz * d + entity.getPosZ() + driftZ;
 
             //if (i % 3 == 0) {
-            Minecraft.getInstance().particles.addParticle(ClientProxy.STAR_PARTICLE.get(), x, y, z, 0.01 * xx, 0.1 * entity.getHeight(), 0.01 * zz);
+            //Minecraft.getInstance().particles.
+
+            StarParticle particle = new StarParticle(Minecraft.getInstance().world, x, y, z, 0.01 * xx, 0.1 * entity.getHeight(), 0.01 * zz);
+            Minecraft.getInstance().particles.addEffect(particle);
+            //Minecraft.getInstance().particles.addParticle(ClientProxy.STAR_PARTICLE.get(), x, y, z, 0.01 * xx, 0.1 * entity.getHeight(), 0.01 * zz);
             //} else {
             //Minecraft.getInstance().particles.addParticle(Sparkle.TWINKLE_PARTICLE.get(), x, y, z, 0.01 * xx, 0, 0.01 * zz);
             // }

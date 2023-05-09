@@ -17,6 +17,11 @@ import org.apache.commons.lang3.tuple.Pair;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.URL;
+import java.net.URLConnection;
+
 // The value here should match an entry in the META-INF/mods.toml file
 @Mod(Sparkle.MODID)
 public class Sparkle {
@@ -48,9 +53,23 @@ public class Sparkle {
         //Make the server tell clients it is fine to join without it
         ModLoadingContext.get().registerExtensionPoint(ExtensionPoint.DISPLAYTEST, () -> Pair.of(() -> FMLNetworkConstants.IGNORESERVERONLY, (a, b) -> true));
 
+
+
         DistExecutor.unsafeRunWhenOn(Dist.CLIENT, () -> {
             ClientProxy client = new ClientProxy();
             return client.register();
         });
+    }
+
+    public static InputStream getResource(String filename) throws IOException {
+        URL url = Sparkle.class.getClassLoader().getResource("assets/sparkles/" + filename);
+
+        if (url == null) {
+            return null;
+        }
+
+        URLConnection connection = url.openConnection();
+        connection.setUseCaches(false);
+        return connection.getInputStream();
     }
 }
