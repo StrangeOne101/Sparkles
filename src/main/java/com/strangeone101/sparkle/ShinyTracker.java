@@ -24,6 +24,8 @@ import java.util.Set;
 
 public class ShinyTracker {
 
+    public static final ShinyTracker INSTANCE = new ShinyTracker();
+
     private Set<Pokemon> shinyMap = new HashSet<>();
     private Set<PixelmonEntity> shinyTracking = new HashSet<>();
 
