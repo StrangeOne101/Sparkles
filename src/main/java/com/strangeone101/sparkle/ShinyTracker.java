@@ -4,10 +4,15 @@ import com.pixelmonmod.pixelmon.api.pokemon.Pokemon;
 import com.pixelmonmod.pixelmon.battles.BattleRegistry;
 
 import com.pixelmonmod.pixelmon.entities.pixelmon.PixelmonEntity;
+import com.strangeone101.sparkle.particle.StarParticle;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.audio.ISound;
+import net.minecraft.client.audio.SimpleSound;
 import net.minecraft.client.entity.player.ClientPlayerEntity;
 import net.minecraft.client.renderer.culling.ClippingHelper;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.SoundCategory;
 import net.minecraft.util.math.BlockRayTraceResult;
 import net.minecraft.util.math.RayTraceContext;
 import net.minecraft.util.math.RayTraceResult;
@@ -18,6 +23,8 @@ import java.util.Iterator;
 import java.util.Set;
 
 public class ShinyTracker {
+
+    public static final ShinyTracker INSTANCE = new ShinyTracker();
 
     private Set<Pokemon> shinyMap = new HashSet<>();
     private Set<PixelmonEntity> shinyTracking = new HashSet<>();
@@ -111,7 +118,11 @@ public class ShinyTracker {
         ClientPlayerEntity thiz = Minecraft.getInstance().player;
         //thiz.playSound(Sparkle.SHINY_SOUND.get(), 1F, 1F);
         ClientScheduler.schedule(3, () -> {
-            thiz.playSound(ClientProxy.SHINY_SOUND.get(), 1F, 1F);
+            //thiz.playSound(ClientProxy.SHINY_SOUND.get(), 1F, 1F);
+            SimpleSound sound = new SimpleSound(new ResourceLocation(Sparkle.MODID, "sparkle"), SoundCategory.NEUTRAL,
+                    1F, 1F, false, 0, ISound.AttenuationType.LINEAR,
+                    entity.getPosX(), entity.getPosY(), entity.getPosZ(), true);
+            Minecraft.getInstance().getSoundHandler().play(sound);
         });
 
         final double d = entity.getWidth() / 2.5D + 0.2D;
@@ -134,7 +145,11 @@ public class ShinyTracker {
             double z = zz * d + entity.getPosZ() + driftZ;
 
             //if (i % 3 == 0) {
-            Minecraft.getInstance().particles.addParticle(ClientProxy.STAR_PARTICLE.get(), x, y, z, 0.01 * xx, 0.1 * entity.getHeight(), 0.01 * zz);
+            //Minecraft.getInstance().particles.
+
+            StarParticle particle = new StarParticle(Minecraft.getInstance().world, x, y, z, 0.01 * xx, 0.1 * entity.getHeight(), 0.01 * zz);
+            Minecraft.getInstance().particles.addEffect(particle);
+            //Minecraft.getInstance().particles.addParticle(ClientProxy.STAR_PARTICLE.get(), x, y, z, 0.01 * xx, 0.1 * entity.getHeight(), 0.01 * zz);
             //} else {
             //Minecraft.getInstance().particles.addParticle(Sparkle.TWINKLE_PARTICLE.get(), x, y, z, 0.01 * xx, 0, 0.01 * zz);
             // }
