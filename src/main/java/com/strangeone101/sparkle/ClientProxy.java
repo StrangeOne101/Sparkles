@@ -20,6 +20,8 @@ public class ClientProxy {
     public static RegistryObject<SoundEvent> SHINY_SOUND = Sparkle.SOUNDS.register("sparkle", () -> new SoundEvent(new ResourceLocation(Sparkle.MODID, "sparkle")));
     public static RegistryObject<BasicParticleType> STAR_PARTICLE = Sparkle.PARTICLES.register("star", () -> new BasicParticleType(true));
 
+
+
     public DistExecutor.SafeRunnable register() {
         return () -> {
             FMLJavaModLoadingContext.get().getModEventBus().addListener(this::registerParticleFactories);

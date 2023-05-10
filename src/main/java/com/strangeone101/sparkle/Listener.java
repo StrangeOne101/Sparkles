@@ -1,16 +1,24 @@
 package com.strangeone101.sparkle;
 
 import com.pixelmonmod.pixelmon.entities.pixelmon.PixelmonEntity;
+import com.strangeone101.sparkle.particle.FakeParticle;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screen.ChatScreen;
 import net.minecraft.client.renderer.culling.ClippingHelper;
+import net.minecraft.client.renderer.texture.AtlasTexture;
+import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.client.event.RenderWorldLastEvent;
+import net.minecraftforge.client.event.TextureStitchEvent;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.event.entity.EntityJoinWorldEvent;
 import net.minecraftforge.event.entity.player.PlayerEvent;
 import net.minecraftforge.eventbus.api.Event;
 import net.minecraftforge.eventbus.api.EventPriority;
+import net.minecraftforge.fml.ModLoader;
+import net.minecraftforge.fml.client.registry.ClientRegistry;
+import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
+import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 
 public class Listener {
 
@@ -19,6 +27,9 @@ public class Listener {
         MinecraftForge.EVENT_BUS.addListener(this::onClientTick);
         MinecraftForge.EVENT_BUS.addListener(this::onPlayerLeaveWorld);
         MinecraftForge.EVENT_BUS.addListener(this::onRenderWorldLastEvent);
+        //MinecraftForge.EVENT_BUS.addListener(this::onTextureStitch);
+
+        FMLJavaModLoadingContext.get().getModEventBus().addListener(this::onTextureStitch);
     }
 
     public void onPokemonSpawn(EntityJoinWorldEvent event) {
@@ -60,4 +71,16 @@ public class Listener {
     /*public void onCameraSetup(EntityViewRenderEvent.CameraSetup event) {
         Minecraft.getInstance().gameRenderer.getActiveRenderInfo().
     }*/
+
+    public void clientSetup(FMLClientSetupEvent event) {
+
+    }
+
+    public void onTextureStitch(TextureStitchEvent.Pre event) {
+        if (event.getMap().getTextureLocation().equals(AtlasTexture.LOCATION_PARTICLES_TEXTURE)) {
+            event.addSprite(new ResourceLocation(Sparkle.MODID, "particle/stars_0"));
+            event.addSprite(new ResourceLocation(Sparkle.MODID, "particle/stars_1"));
+            FakeParticle.atlasTexture = event.getMap();
+        }
+    }
 }
